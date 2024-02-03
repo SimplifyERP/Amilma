@@ -16,15 +16,14 @@ def execute(filters=None):
 def get_columns(filters):
 	columns = [
 		_("Outlet Name") + ":Data:200",
-		_("GST No") + ":Data:150",
+		_("Customer GST No") + ":Data:150",
 		_("Bill Date") + ":Data:120",
-		_("Bill No") + ":Data:200",
+		_("Bill No") + ":Data:300",
 		_("Bill Amount") + ":Data:100",
 		_("SGST") + ":Currency:100",
 		_("CGST") + ":Currency:100",
 		_("IGST") + ":Currency:100",
-		_("Total Amount") +":Currency:150",
-		_("Status") + ":Data:100"
+		_("Total Amount") +":Currency:150"
 	]
 	return columns
 
@@ -32,14 +31,14 @@ def get_columns(filters):
 def get_data(filters):
 	data = []
 	if filters.company:
-		get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus':('!=',0),'posting_date':('between',(filters.from_date,filters.to_date)),'company':filters.company},['customer_name','tax_id','posting_date','name','base_net_total','rounded_total','status'])
+		get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus':('!=',0),'posting_date':('between',(filters.from_date,filters.to_date)),'company':filters.company},['customer_name','tax_id','posting_date','name','base_net_total','rounded_total','address_display'],order_by='name' )
 	else:
-		get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus':('!=',0),'posting_date':('between',(filters.from_date,filters.to_date))},['customer_name','tax_id','posting_date','name','base_net_total','rounded_total','status'])
+		get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus':('!=',0),'posting_date':('between',(filters.from_date,filters.to_date))},['customer_name','tax_id','posting_date','name','base_net_total','rounded_total','address_display'],order_by='name' )
 	for sales in get_sales_invoice:
 			sgst_tax_amount = get_sgst_tax_amount(sales.name)
 			cgst_tax_amount = get_cgst_tax_amount(sales.name)
 			igst_tax_amount = get_igst_tax_amount(sales.name)
-			row = [sales.customer_name,sales.tax_id,format_date(sales.posting_date),sales.name,sales.base_net_total,sgst_tax_amount,cgst_tax_amount,igst_tax_amount,sales.rounded_total,sales.status]
+			row = [sales.customer_name,sales.tax_id,format_date(sales.posting_date),sales.name,sales.base_net_total,sgst_tax_amount,cgst_tax_amount,igst_tax_amount,sales.rounded_total]
 			data.append(row)
 	return data	
 
@@ -76,3 +75,7 @@ def get_igst_tax_amount(name):
 			get_tax_amount = frappe.db.get_value("Sales Taxes and Charges",{'parent':name,'account_head':tax.account_head},['tax_amount']) or 0
 			return get_tax_amount
 		
+
+
+# def get_company_address(company):
+# 	return frappe.db.get_value("Company", company, "address_html") or ""
