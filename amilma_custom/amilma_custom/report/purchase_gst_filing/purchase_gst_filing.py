@@ -17,36 +17,38 @@ def execute(filters=None):
 # giving the columns below for report
 def get_columns(filters):
 	columns = [
-		_("Outlet Name") + ":Data:200",
-		_("GST No") + ":Data:150",
+		_("Supplier Name") + ":Data:200",
+		_(" Supplier GST No") + ":Data:150",
+		_("Customer Name") + ":Data:200",
+		_("Customer GST No") + ":Data:150",
+		_("Address") + ":Small Text:500",
 		_("Bill Date") + ":Data:120",
 		_("Bill No") + ":Data:200",
 		_("Bill Amount") + ":Data:100",
 		_("SGST") + ":Currency:100",
 		_("CGST") + ":Currency:100",
 		_("IGST") + ":Currency:100",
-		_("Total Amount") +":Currency:150",
-		_("Status") + ":Data:100"
+		_("Total Amount") +":Currency:150"
 	]
 	return columns
 
-
-
-
-#getting the purchase invoice data
+# getting the purchase invoice data
 def get_data(filters):
-	data = []
-	if filters.company:
-		get_purchase_invoice = frappe.db.get_all("Purchase Invoice",{'docstatus':1,'posting_date':('between',(filters.from_date,filters.to_date)),'company':filters.company},['supplier_name','tax_id','posting_date','name','base_net_total','rounded_total','status'])
-	else:
-		get_purchase_invoice = frappe.db.get_all("Purchase Invoice",{'docstatus':1,'posting_date':('between',(filters.from_date,filters.to_date))},['supplier_name','tax_id','posting_date','name','base_net_total','rounded_total','status'])
-	for purchase in get_purchase_invoice:
-			sgst_tax_amount = get_sgst_tax_amount(purchase.name)
-			cgst_tax_amount = get_cgst_tax_amount(purchase.name)
-			igst_tax_amount = get_igst_tax_amount(purchase.name)
-			row = [purchase.supplier_name,purchase.tax_id,format_date(purchase.posting_date),purchase.name,purchase.base_net_total,sgst_tax_amount,cgst_tax_amount,igst_tax_amount,purchase.rounded_total,purchase.status]
-			data.append(row)
-	return data	
+    data = []
+    if filters.company:
+        get_purchase_invoice = frappe.db.get_all("Purchase Invoice",{'docstatus': 1, 'posting_date': ('between', (filters.from_date, filters.to_date)), 'company': filters.company},['supplier_name', 'tax_id', 'posting_date', 'name', 'base_net_total', 'rounded_total', 'address_display', 'company'],order_by='name' )
+    else:
+        get_purchase_invoice = frappe.db.get_all("Purchase Invoice",{'docstatus': 1, 'posting_date': ('between', (filters.from_date, filters.to_date))},['supplier_name', 'tax_id', 'posting_date', 'name', 'base_net_total', 'rounded_total', 'address_display', 'company'],order_by='name'  )
+
+    for purchase in get_purchase_invoice:
+        sgst_tax_amount = get_sgst_tax_amount(purchase.name)
+        cgst_tax_amount = get_cgst_tax_amount(purchase.name)
+        igst_tax_amount = get_igst_tax_amount(purchase.name)
+        supplier_gst_no = get_supplier_gst_no(purchase.supplier_name)
+        customer_gst_no = get_customer_gst_no(purchase.company)
+        row = [purchase.supplier_name, supplier_gst_no, purchase.company, customer_gst_no, purchase.address_display,format_date(purchase.posting_date), purchase.name, purchase.base_net_total, sgst_tax_amount,cgst_tax_amount, igst_tax_amount, purchase.rounded_total]
+        data.append(row)
+    return data
 
 # get the purchase taxes table in thata if sgst is here get the tax_amount 
 def get_sgst_tax_amount(name):
@@ -81,3 +83,9 @@ def get_igst_tax_amount(name):
 			get_tax_amount = frappe.db.get_value("Purchase Taxes and Charges",{'parent':name,'account_head':tax.account_head},['tax_amount']) or 0
 			return get_tax_amount
 		
+def get_supplier_gst_no(supplier_name):
+    return frappe.db.get_value("Supplier", supplier_name, "tax_id") or ""
+
+
+def get_customer_gst_no(company):
+    return frappe.db.get_value("Company", company, "tax_id") or ""
