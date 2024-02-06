@@ -5,6 +5,9 @@ import frappe
 from frappe import _, msgprint
 import re
 from frappe.utils import get_first_day, today, get_last_day, format_datetime, add_years, date_diff, add_days, getdate, cint, format_date,get_url_to_form
+from frappe.contacts.doctype.address.address import get_address_display
+
+
 
 #execute the columns and data in main
 def execute(filters=None):
@@ -23,7 +26,8 @@ def get_columns(filters):
 		_("SGST") + ":Currency:100",
 		_("CGST") + ":Currency:100",
 		_("IGST") + ":Currency:100",
-		_("Total Amount") +":Currency:150"
+		_("Total Amount") +":Currency:150",
+		_('Status') +":Data:100"
 	]
 	return columns
 
@@ -31,14 +35,17 @@ def get_columns(filters):
 def get_data(filters):
 	data = []
 	if filters.company:
-		get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus':('!=',0),'posting_date':('between',(filters.from_date,filters.to_date)),'company':filters.company},['customer_name','tax_id','posting_date','name','base_net_total','rounded_total','address_display'],order_by='name' )
+		get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus':('!=',0),'posting_date':('between',(filters.from_date,filters.to_date)),'company':filters.company},['customer_name','tax_id','posting_date','name','base_net_total','rounded_total','status'],order_by='name' )
 	else:
-		get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus':('!=',0),'posting_date':('between',(filters.from_date,filters.to_date))},['customer_name','tax_id','posting_date','name','base_net_total','rounded_total','address_display'],order_by='name' )
+		get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus':('!=',0),'posting_date':('between',(filters.from_date,filters.to_date))},['customer_name','tax_id','posting_date','name','base_net_total','rounded_total','status'],order_by='name' )
 	for sales in get_sales_invoice:
-			sgst_tax_amount = get_sgst_tax_amount(sales.name)
+			sgst_tax_amount = get_sgst_tax_amount(sales.name)	
 			cgst_tax_amount = get_cgst_tax_amount(sales.name)
 			igst_tax_amount = get_igst_tax_amount(sales.name)
-			row = [sales.customer_name,sales.tax_id,format_date(sales.posting_date),sales.name,sales.base_net_total,sgst_tax_amount,cgst_tax_amount,igst_tax_amount,sales.rounded_total]
+			if sales.status == "Cancelled":
+				row = [sales.customer_name,sales.tax_id,format_date(sales.posting_date),sales.name,float(0.0),float(0.0),float(0.0),float(0.0),float(0.0),sales.status]
+			else:
+				row = [sales.customer_name,sales.tax_id,format_date(sales.posting_date),sales.name,sales.base_net_total,sgst_tax_amount,cgst_tax_amount,igst_tax_amount,sales.rounded_total,sales.status]
 			data.append(row)
 	return data	
 
@@ -77,5 +84,12 @@ def get_igst_tax_amount(name):
 		
 
 
-# def get_company_address(company):
-# 	return frappe.db.get_value("Company", company, "address_html") or ""
+@frappe.whitelist()
+def get_address(company):
+    address_without_br_tags = ""
+    address = frappe.db.get_value("Dynamic Link",{'link_name':company},['parent'])
+    if address:
+        address_without_br_tags = re.sub('<br>', '', get_address_display(address))
+    else:
+        address_without_br_tags = ""    
+    return address_without_br_tags
