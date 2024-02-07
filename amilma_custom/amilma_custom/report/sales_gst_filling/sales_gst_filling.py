@@ -22,7 +22,7 @@ def get_columns(filters):
 		_("Customer GST No") + ":Data:150",
 		_("Bill Date") + ":Data:120",
 		_("Bill No") + ":Data:300",
-		_("Bill Amount") + ":Data:100",
+		_("Bill Amount") + ":Currency:100",
 		_("SGST") + ":Currency:100",
 		_("CGST") + ":Currency:100",
 		_("IGST") + ":Currency:100",
