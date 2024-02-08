@@ -18,7 +18,7 @@ def execute(filters=None):
 	# 
 	if filters.get("OutletType"):
 		value += f""" and  ci.outlet_type = '{filters.get('OutletType')}'  """
-		data_v += f""" and  outlet_type = '{filters.get('OutletType')}'  """
+		data_v += f""" and  ci.outlet_type = '{filters.get('OutletType')}'  """
 	if filters.get("Customer_Group"):
 		value += f""" and  ci.customer_group = '{filters.get('Customer_Group')}'  """
 		data_v += f""" and  customer_group = '{filters.get('Customer_Group')}'  """
@@ -29,22 +29,24 @@ def execute(filters=None):
 	ddl = [l['customer_name'] for l in data]
 	# frappe.msgprint(dd2[3])
 	# frappe.msgprint(f"{dd2[3]}g")
-
+	from_date = datetime.strptime(filters.get("from_date"), '%Y-%m-%d')
+	to_date = datetime.strptime(filters.get("to_date"), '%Y-%m-%d')
+	months_count = (to_date.year - from_date.year) * 12 + to_date.month - from_date.month + 1
 	dd = frappe.db.sql(f""" 
 				select 
-                  si.customer_name,
+                  ci.customer_name,
 				  ci.custom_customer_joining_date,
-				  si.freezer_serial_no,
+				  ci.serial_no,
 					{dd2[1]}
 
 					CASE
-					      WHEN sum(si.base_grand_total) is null or sum(si.base_grand_total) = 0 THEN 'InActive'
+					      WHEN sum(si.rounded_total) is null or sum(si.rounded_total) = 0 THEN 'InActive'
 					      ELSE 'Active'
 					  END AS billedstatus,
-					si.capacity,
-					COALESCE(sum(si.base_grand_total),0) as grand,
+					ci.capacity,
+					COALESCE(sum(si.rounded_total),0) as grand,
           DATEDIFF('{filters.get("to_date")}' , ci.creation) DIV 30 as join_moth,
-	        (COALESCE(sum(si.base_grand_total),0)/( DATEDIFF('{filters.get("to_date")}' , ci.creation) DIV 30)) as avg
+	        (COALESCE(sum(si.rounded_total),0)/{months_count}) as avg
           from 
             `tabSales Invoice` si
              left join `tabCustomer` ci on ci.name =si.customer
