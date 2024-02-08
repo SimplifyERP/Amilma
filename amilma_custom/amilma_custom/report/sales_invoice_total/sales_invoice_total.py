@@ -11,7 +11,7 @@ from datetime import datetime
 def execute(filters=None):
 	dd = get_period_date_ranges_columns_report(getdate(filters.get("from_date")),getdate(filters.get("to_date")))
 	res = (getdate(filters.get("to_date")).year - getdate(filters.get("from_date")).year) *12 + (getdate(filters.get("to_date")).month -  getdate(filters.get("from_date")).month)
-
+	
 	value = ""
 	if filters.get("Customer"):
 		value = f""" and  si.customer = '{filters.get('Customer')}'  """
@@ -41,19 +41,22 @@ def execute(filters=None):
 
                                 """
 	# frappe.msgprint(str(dud))
+	from_date = datetime.strptime(filters.get("from_date"), '%Y-%m-%d')
+	to_date = datetime.strptime(filters.get("to_date"), '%Y-%m-%d')
+	months_count = (to_date.year - from_date.year) * 12 + to_date.month - from_date.month + 1
 	data = frappe.db.sql(f""" 
 				select 
-                  si.customer_name,
-				  si.freezer_serial_no,
-				  si.freezer_type,
-				  si.capacity,
-				  ci.outlet_type,
+                  ci.customer_name,
+				  ci.serial_no,
+				  ci.freezer_type,
+				  ci.capacity,
+				  ci.custom_outlet_type,
 				  ci.name as cu_id,
 				  ci.territory as territory,
 					{dd[1]}
-                  sum(si.base_grand_total) as grand,
+                  sum(si.rounded_total) as grand,
                    DATEDIFF('{filters.get("to_date")}' , ci.creation) DIV 30 as join_moth,
-	            (sum(si.base_grand_total)/( DATEDIFF('{filters.get("to_date")}' , ci.creation) DIV 30)) as avg
+	            (sum(si.rounded_total)/{months_count}) as avg
                 from 
                   `tabSales Invoice` si
                    left join `tabCustomer` ci on ci.name =si.customer
@@ -98,7 +101,7 @@ def execute(filters=None):
 			"width":  80
 		},
 		{
-			"fieldname": "freezer_serial_no",
+			"fieldname": "serial_no",
 			"label": "<b>Serial No</b>",
 			"fieldtype": "Data",
 			"width":  200
@@ -116,7 +119,7 @@ def execute(filters=None):
 			"width":  200
 		},
 		{
-			"fieldname": "outlet_type",
+			"fieldname": "custom_outlet_type",
 			"label": "<b>Outlet Type</b>",
 			"fieldtype": "Data",
 			"width":  200
