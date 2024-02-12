@@ -25,7 +25,7 @@ def get_columns(filters):
 		_("CGST") + ":Currency:100",
 		_("IGST") + ":Currency:100",
 		_("Customer GST No") + ":Data:150",
-		_("Discound Amount") + ":Data:150",
+		_("Discound Amount") + ":Currency:150",
 		_("Total Amount") +":Currency:150",
 	]
 	return columns
