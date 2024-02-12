@@ -25,15 +25,16 @@ def get_columns(filters):
 		_("CGST") + ":Currency:100",
 		_("IGST") + ":Currency:100",
 		_("Customer GST No") + ":Data:150",
+		_("Discound Amount") + ":Data:150",
 		_("Total Amount") +":Currency:150",
 	]
 	return columns
 def get_data(filters):
     data = []
     if filters.company:
-        get_sales_invoice = frappe.db.get_all("Sales Invoice", {'docstatus': ('!=', 0),'posting_date': ('between', (filters.from_date, filters.to_date)),'company': filters.company},['customer_name', 'tax_id', 'posting_date', 'name', 'base_net_total', 'rounded_total', 'status', 'additional_discount_percentage'],order_by='name')
+        get_sales_invoice = frappe.db.get_all("Sales Invoice", {'docstatus': ('!=', 0),'posting_date': ('between', (filters.from_date, filters.to_date)),'company': filters.company},['customer_name', 'tax_id', 'posting_date', 'name', 'base_net_total', 'rounded_total', 'status', 'base_discount_amount','additional_discount_percentage'],order_by='name')
     else:
-        get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus': ('!=', 0),'posting_date': ('between', (filters.from_date, filters.to_date))},['customer_name', 'tax_id', 'posting_date', 'name', 'base_net_total','rounded_total', 'status', 'additional_discount_percentage'],order_by='name')
+        get_sales_invoice = frappe.db.get_all("Sales Invoice",{'docstatus': ('!=', 0),'posting_date': ('between', (filters.from_date, filters.to_date))},['customer_name', 'tax_id', 'posting_date', 'name', 'base_net_total','rounded_total', 'status','base_discount_amount' 'additional_discount_percentage'],order_by='name')
     for sales in get_sales_invoice:
         sgst_tax_amount = get_sgst_tax_amount(sales.name)
         cgst_tax_amount = get_cgst_tax_amount(sales.name)
@@ -41,7 +42,7 @@ def get_data(filters):
         if sales.status == "Cancelled":
             row = [sales.customer_name, format_date(sales.posting_date), sales.name, float(0.0), float(0.0),float(0.0), float(0.0), float(0.0), sales.tax_id]
         elif sales.additional_discount_percentage > 0:  # Check if additional_discount_percentage > 0
-            row = [sales.customer_name, format_date(sales.posting_date), sales.name, sales.base_net_total,sgst_tax_amount, cgst_tax_amount, igst_tax_amount, sales.tax_id, sales.rounded_total]
+            row = [sales.customer_name, format_date(sales.posting_date), sales.name, sales.base_net_total,sgst_tax_amount, cgst_tax_amount, igst_tax_amount, sales.tax_id, sales.base_discount_amount,sales.rounded_total]
             data.append(row)
     return data
 
