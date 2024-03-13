@@ -18,7 +18,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-03-12 15:12:23.196334",
+ "modified": "2024-03-13 17:24:56.546587",
  "modified_by": "Administrator",
  "module": "Amilma Custom",
  "name": "opportunity",
@@ -29,7 +29,7 @@
  "show_list": 0,
  "show_sidebar": 0,
  "success_message": "Thank You !!",
- "title": "Opportunity",
+ "title": "Customer On-Boarding",
  "web_form_fields": [
   {
    "allow_read_on_all_link_options": 0,
@@ -59,6 +59,18 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "hidden": 0,
+   "label": "Outlet Name",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "reqd": 1,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
    "fieldname": "",
    "fieldtype": "Column Break",
    "hidden": 0,
@@ -68,6 +80,19 @@
    "options": "",
    "read_only": 0,
    "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "custom_outlet_type",
+   "fieldtype": "Link",
+   "hidden": 0,
+   "label": "Outlet Type",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "Outlet Type",
+   "read_only": 0,
+   "reqd": 1,
    "show_in_filter": 0
   },
   {
@@ -85,19 +110,6 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "",
-   "fieldtype": "Section Break",
-   "hidden": 0,
-   "label": "Organization",
-   "max_length": 0,
-   "max_value": 0,
-   "options": "",
-   "read_only": 0,
-   "reqd": 0,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
    "fieldname": "territory",
    "fieldtype": "Link",
    "hidden": 0,
@@ -107,19 +119,6 @@
    "options": "Territory",
    "read_only": 0,
    "reqd": 1,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
-   "fieldname": "",
-   "fieldtype": "Column Break",
-   "hidden": 0,
-   "label": "",
-   "max_length": 0,
-   "max_value": 0,
-   "options": "",
-   "read_only": 0,
-   "reqd": 0,
    "show_in_filter": 0
   },
   {
@@ -151,14 +150,12 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "depends_on": "",
-   "fieldname": "contact_person",
-   "fieldtype": "Link",
+   "fieldname": "custom_applicant_name",
+   "fieldtype": "Data",
    "hidden": 0,
    "label": "Applicant Name",
    "max_length": 0,
    "max_value": 0,
-   "options": "Contact",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0
@@ -376,50 +373,13 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "title",
-   "fieldtype": "Data",
-   "hidden": 0,
-   "label": "Outlet Name",
-   "max_length": 0,
-   "max_value": 0,
-   "read_only": 0,
-   "reqd": 1,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
-   "fieldname": "custom_outlet_type",
+   "fieldname": "custom_outlet_category",
    "fieldtype": "Link",
-   "hidden": 0,
-   "label": "Outlet Type",
-   "max_length": 0,
-   "max_value": 0,
-   "options": "Outlet Type",
-   "read_only": 0,
-   "reqd": 1,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
-   "fieldname": "outlet_category",
-   "fieldtype": "Data",
    "hidden": 0,
    "label": "Outlet Category",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 0,
-   "reqd": 1,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
-   "fieldname": "",
-   "fieldtype": "Column Break",
-   "hidden": 0,
-   "label": "",
-   "max_length": 0,
-   "max_value": 0,
-   "options": "",
+   "options": "Outlet Category",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
@@ -432,6 +392,19 @@
    "label": "Existing Brand & Volume",
    "max_length": 0,
    "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "",
+   "fieldtype": "Column Break",
+   "hidden": 0,
+   "label": "",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
@@ -482,7 +455,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
-   "reqd": 1,
+   "reqd": 0,
    "show_in_filter": 0
   },
   {
@@ -506,7 +479,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
-   "reqd": 1,
+   "reqd": 0,
    "show_in_filter": 0
   },
   {
@@ -536,26 +509,24 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "custom_district_de",
-   "fieldtype": "Link",
+   "fieldname": "custom_district_",
+   "fieldtype": "Data",
    "hidden": 0,
-   "label": "District",
+   "label": "District ",
    "max_length": 0,
    "max_value": 0,
-   "options": "District",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "custom_pincode_de",
-   "fieldtype": "Link",
+   "fieldname": "custom_pincode",
+   "fieldtype": "Data",
    "hidden": 0,
    "label": "Pincode",
    "max_length": 0,
    "max_value": 0,
-   "options": "Pincode",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0
