@@ -187,23 +187,13 @@ doctype_js = {
 # ]
 
 
-fixtures = [{
-    "dt": "Custom Field",
-    "filters": [
-        ["name", "in", [
-            #opportunity Custom Field
-            'Opportunity-custom_existing_brand_and_volume','Opportunity-custom_outlet_type','Opportunity-custom_outlet_category'
-            #Contact Custom Field
-            'Contact-custom_aaadhar_number'
-        ]]
-    ]
-    },
+fixtures = [
     {
         "dt":"Property Setter",
         "filters":[
             ["name","in",[
                 "Employee Checkin-main-field_order","Employee Checkin-main-image_field","Employee-main-field_order",
-                'Sales Invoice-base_rounded_total-in_list_view'
+                'Sales Invoice-base_rounded_total-in_list_view',"Opportunity-opportunity_from-reqd","Opportunity","Opportunity-party_name-reqd"
             ]]
         ]
 
