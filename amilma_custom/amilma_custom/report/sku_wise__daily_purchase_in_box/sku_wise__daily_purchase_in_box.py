@@ -1,14 +1,6 @@
 # Copyright (c) 2024, Vivek and contributors
 # For license information, please see license.txt
 
-# import frappe
-
-
-# def execute(filters=None):
-# 	columns, data = [], []
-# 	return columns, data
-
-
 import frappe
 from frappe.utils import getdate
 from datetime import datetime, timedelta
@@ -82,21 +74,21 @@ def execute(filters=None):
     final_data = {}
     for row in data:
         item_code = row['item_code']
+        item_name = row['item_name']  # Fetch item name from the database result
         if item_code not in final_data:
-            final_data[item_code] = {date: 0 for date in formatted_dates}
-        final_data[item_code][row['posting_date']] = row['quantity']
+            final_data[item_code] = {'item_name': item_name, 'total_quantity': 0, 'dates': {date: 0 for date in formatted_dates}}
+        final_data[item_code]['dates'][row['posting_date']] = row['quantity']
+        final_data[item_code]['total_quantity'] += row['quantity']
 
     # Formatting data into the desired structure
     formatted_data = []
     for item_code, values in final_data.items():
-        total_quantity = sum(values.values())
-        row = {'item_code': item_code, 'item_name': data[0]['item_name'], 'total_quantity': total_quantity}
-        for date in formatted_dates:
-            row[date] = values.get(date, 0)
+        row = {'item_code': item_code, 'item_name': values['item_name'], 'total_quantity': values['total_quantity']}
+        for date, quantity in values['dates'].items():
+            row[date] = quantity
             # Add item against quantity below the respective date
             if date == datetime.now().strftime("%d/%b"):
-                row[date + '_item'] = f"{item_code}: {values.get(date, 0)}"
+                row[date + '_item'] = f"{item_code}: {quantity}"
         formatted_data.append(row)
-    
     
     return columns, formatted_data
