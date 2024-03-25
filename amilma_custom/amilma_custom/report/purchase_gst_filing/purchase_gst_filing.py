@@ -48,9 +48,9 @@ def get_data(filters):
         supplier_gst_no = get_supplier_gst_no(purchase.supplier_name)
         customer_gst_no = get_customer_gst_no(purchase.company)
         if purchase.status == "Cancelled":
-            row = [purchase.supplier_name, supplier_gst_no, purchase.company, customer_gst_no,format_date(purchase.posting_date), purchase.name,float(0.0),float(0.0),float(0.0),float(0.0),float(0.0),purchase.status]
+            row = [purchase.supplier_name, supplier_gst_no, purchase.company, customer_gst_no,format_date(purchase.posting_date), purchase.inter_company_invoice_reference,float(0.0),float(0.0),float(0.0),float(0.0),float(0.0),purchase.status]
         else:
-            row = [purchase.supplier_name, supplier_gst_no, purchase.company, customer_gst_no,format_date(purchase.posting_date), purchase.name, purchase.base_net_total, sgst_tax_amount,cgst_tax_amount, igst_tax_amount, purchase.rounded_total,purchase.status]
+            row = [purchase.supplier_name, supplier_gst_no, purchase.company, customer_gst_no,format_date(purchase.posting_date), purchase.inter_company_invoice_reference, purchase.base_net_total, sgst_tax_amount,cgst_tax_amount, igst_tax_amount, purchase.rounded_total,purchase.status]
         data.append(row)
     return data
 
