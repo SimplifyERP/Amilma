@@ -37,9 +37,9 @@ def get_columns(filters):
 def get_data(filters):
     data = []
     if filters.company:
-        get_purchase_invoice = frappe.db.get_all("Purchase Invoice",{'docstatus':('!=','0'), 'posting_date': ('between', (filters.from_date, filters.to_date)), 'company': filters.company},['supplier_name', 'tax_id', 'posting_date', 'name', 'base_net_total', 'rounded_total','company','status'],order_by='name' )
+        get_purchase_invoice = frappe.db.get_all("Purchase Invoice",{'docstatus':('!=','0'), 'posting_date': ('between', (filters.from_date, filters.to_date)), 'company': filters.company},['supplier_name', 'tax_id', 'posting_date', 'name', 'base_net_total','inter_company_invoice_reference', 'rounded_total','company','status'],order_by='name' )
     else:
-        get_purchase_invoice = frappe.db.get_all("Purchase Invoice",{'docstatus': ('!=','0'), 'posting_date': ('between', (filters.from_date, filters.to_date))},['supplier_name', 'tax_id', 'posting_date', 'name', 'base_net_total', 'rounded_total','company','status'],order_by='name'  )
+        get_purchase_invoice = frappe.db.get_all("Purchase Invoice",{'docstatus': ('!=','0'), 'posting_date': ('between', (filters.from_date, filters.to_date))},['supplier_name', 'tax_id', 'posting_date', 'name', 'base_net_total', 'rounded_total','inter_company_invoice_reference','company','status'],order_by='name'  )
 
     for purchase in get_purchase_invoice:
         sgst_tax_amount = get_sgst_tax_amount(purchase.name)
