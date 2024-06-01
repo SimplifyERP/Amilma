@@ -193,7 +193,7 @@ fixtures = [
         "filters":[
             ["name","in",[
                 "Employee Checkin-main-field_order","Employee Checkin-main-image_field","Employee-main-field_order",
-                'Sales Invoice-base_rounded_total-in_list_view',"Opportunity-opportunity_from-reqd","Opportunity-party_name-reqd","Opportunity-company-hidden"
+                'Sales Invoice-base_rounded_total-in_list_view',
             ]]
         ]
 
