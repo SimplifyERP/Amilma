@@ -60,18 +60,6 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "title",
-   "fieldtype": "Data",
-   "hidden": 0,
-   "label": "Outlet Name",
-   "max_length": 0,
-   "max_value": 0,
-   "read_only": 0,
-   "reqd": 1,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
    "fieldname": "",
    "fieldtype": "Column Break",
    "hidden": 0,
